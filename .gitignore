@@ -1,2 +1,3 @@
 data/*
 /venv/
+/db/*.db
