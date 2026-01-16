@@ -1,0 +1,2 @@
+#+TITLE: Data
+This directory holds raw data and acts as a datalake of csv files that will be processed.
