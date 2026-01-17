@@ -1,0 +1,3 @@
+pysqlite3
+easydict==1.7
+-e .

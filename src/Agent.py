@@ -1,6 +1,8 @@
-class AgentBase():
+from .Ingest import Ingest
+
+class Agent():
     def __init__(self, config):
-        pass
+        self.ingest = Ingest(config)
 
     def run(self):
-        pass
+        self.ingest.run()

@@ -1,0 +1,7 @@
+"Date","Transaction","Name","Memo","Amount"
+"2025-10-20","DEBIT","WEB AUTHORIZED PMT CHASE CREDIT CRD","Download from usbank.com.","-500.00"
+"2025-10-20","167","CHECK","Download from usbank.com.","-60.00"
+"2025-10-27","CREDIT","TRANSFER FROM XXXX","Download from usbank.com.","1029.45"
+"2025-10-28","DEBIT","WEB AUTHORIZED PMT CHASE CREDIT CRD","Download from usbank.com.","-250.00"
+"2025-10-28","DEBIT","WEB AUTHORIZED PMT NETFLIX","Download from usbank.com.","-20.00"
+"2025-10-30","CREDIT","TRANSFER FROM XXXX","Download from usbank.com.","1500.00"
