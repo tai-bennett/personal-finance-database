@@ -12,12 +12,9 @@ from .utils import file_hash
 class Ingest():
     def __init__(self, config):
         self.db_path = config.db_path
-        self.raw_dir = config.raw_dir
+        self.raw_dir = Path(config.raw_dir)
 
-    def run(self):
-        pdb.set_trace()
-        conn = sqlite3.connect(self.db_path)
-        cur = conn.cursor()
+    def run(self, cur):
         for source_dir in self.raw_dir.iterdir():
             for csv_path in source_dir.glob("*.csv"):
                 self.ingest_csv(source_dir.name, csv_path, cur)
@@ -39,10 +36,10 @@ class Ingest():
                     (
                         str(uuid.uuid4()),
                         source,
-                        csv_path,
+                        str(csv_path),
                         i,
                         ts,
                         fh,
-                        json.dump(row)
+                        json.dumps(row)
                     ),
                 )

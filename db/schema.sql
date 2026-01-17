@@ -4,7 +4,7 @@ PRAGMA foreign_keys = ON;
 -- raw ingestions
 -- ======================================
 
-CREATE TABLE IF NOT EXISTS raw_transations (
+CREATE TABLE IF NOT EXISTS raw_transactions (
     raw_id TEXT PRIMARY KEY,
     source_bank TEXT NOT NULL,
     file_name TEXT NOT NULL,
@@ -14,8 +14,8 @@ CREATE TABLE IF NOT EXISTS raw_transations (
     raw_payload TEXT NOT NULL
 );
 
-CREATE INDEX IF NOT EXISTS idx_raw_filehas
-ON raw_transations (file_has);
+CREATE INDEX IF NOT EXISTS idx_raw_file_has
+ON raw_transactions (file_has);
 
 -- ======================================
 -- staging (normalized)

@@ -1,4 +1,4 @@
 {
-    "db_path": "~/gitProjects/personal-finance-database/db/test.db",
-    "raw_dir": "~/gitProjects/personal-finance-database/data/raw_sample"
+    "db_path": "db/test.db",
+    "raw_dir": "data/raw_sample"
 }
