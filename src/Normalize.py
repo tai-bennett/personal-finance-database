@@ -7,11 +7,15 @@ from datetime import datetime
 class Normalize():
     def __init__(self, config):
         self.db_path = config.db_path
+        self.ts = config.timestamp
+        self.update_mode = True
 
     def run(self, cur):
-        rows = cur.execute(
-            "SELECT raw_id, source_bank, raw_payload, ingestion_ts FROM raw_transactions"
-            ).fetchall()
+        command = "SELECT raw_id, source_bank, raw_payload, ingestion_ts FROM raw_transactions"
+        if self.update_mode:
+            command = command + " WHERE ingestion_ts = '" + str(self.ts) + "'"
+
+        rows = cur.execute(command).fetchall()
 
         for raw_id, source, raw_payload, ts in rows:
             payload = json.loads(raw_payload)

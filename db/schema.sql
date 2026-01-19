@@ -69,3 +69,41 @@ CREATE TABLE IF NOT EXISTS accounts (
     FOREIGN KEY (institution_id) REFERENCES institutions(institution_id)
 );
 
+-- ======================================
+-- meta data: raw files
+-- ======================================
+
+CREATE TABLE IF NOT EXISTS raw_files (
+    file_hash TEXT PRIMARY KEY,
+    file_name TEXT,
+    source_bank TEXT,
+    file_size INTEGER,
+    num_row INTEGER,
+    ingestion_date TEXT
+);
+
+-- ======================================
+-- categories & tags
+-- ======================================
+
+CREATE TABLE IF NOT EXISTS categories (
+	category_id TEXT PRIMARY KEY,
+	category_name TEXT NOT NULL
+	);
+
+CREATE TABLE IF NOT EXISTS category_rules (
+	rule_id TEXT PRIMARY KEY,
+	pattern_type TEXT NOT NULL,
+	pattern TEXT NOT NULL,
+	category_id NOT NULL,
+	priority INTEGER DEFAULT 0,
+	created_at TEXT NOT NULL,
+	description TEXT,
+	);
+
+CREATE TABLE IF NOT EXISTS transaction_categories (
+	categorization_id TEXT PRIMARY KEY,
+	transaction_id TEXT NOT NULL,
+	category_id TEXT NOT NULL,
+	created_at TEXT NOT NULL
+	);

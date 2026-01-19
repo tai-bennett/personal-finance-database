@@ -7,10 +7,11 @@ from datetime import datetime
 class Dedupe():
     def __init__(self, config):
         self.db_path = config.db_path
+        self.ts = config['timestamp']
 
     def run(self, cur):
         rows = cur.execute("SELECT * FROM staging_transactions").fetchall()
-        now = datetime.utcnow().isoformat()
+        now = self.ts
         for r in rows:
             self.dedupe(r, cur, now)
 
