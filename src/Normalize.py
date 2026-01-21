@@ -21,14 +21,14 @@ class Normalize():
             payload = json.loads(raw_payload)
 
             try:
-                t_date, p_date, desc, amt = self.normalize_row(source, payload)
+                t_date, p_date, desc, amt, cat = self.normalize_row(source, payload)
             except Exception:
                 continue
 
             cur.execute(
                 """
                 INSERT OR IGNORE INTO staging_transactions
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
                     str(uuid.uuid4()),
@@ -41,6 +41,7 @@ class Normalize():
                     amt,
                     'USD',
                     ts,
+                    cat
                 ),
                 )
 
@@ -50,14 +51,20 @@ class Normalize():
                 payload['Date'],
                 None,
                 payload['Name'],
-                payload['Amount']
+                payload['Amount'],
+                None
                 )
         if source == 'chase_credit_card':
+            t_date = payload['Transaction Date']
+            p_date = payload['Post Date']
+            t_date = datetime.strptime(t_date, "%m/%d/%Y").date().isoformat()
+            p_date = datetime.strptime(p_date, "%m/%d/%Y").date().isoformat()
             return (
-                payload['Transaction Date'],
-                payload['Post Date'],
+                t_date,
+                p_date,
                 payload['Description'],
-                payload['Amount']
+                payload['Amount'],
+                payload['Category']
                 )
         raise ValueError(f"While normalizing, unknown source {source} was used.")
         

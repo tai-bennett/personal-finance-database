@@ -38,9 +38,9 @@ class Ingest():
             # add meta data
             size = os.path.getsize(csv_path)
             reader = csv.DictReader(f)
-            num_row = sum(1 for row in reader)
-            self._add_meta_data((fh, str(csv_path), source, size, num_row, self.ts))
+            row_count = 0
             for i, row in enumerate(reader):
+                row_count += 1
                 self.cur.execute(
                     """
                     INSERT INTO raw_transactions
@@ -56,6 +56,7 @@ class Ingest():
                         json.dumps(row)
                     ),
                 )
+            self._add_meta_data((fh, str(csv_path), source, size, row_count, self.ts))
 
     def _add_meta_data(self, row):
         self.cur.execute(
@@ -70,7 +71,7 @@ class Ingest():
         # check if raw files has given file hash as key
         command = "SELECT 1 FROM raw_files WHERE file_hash = " + "'" + str(fh) + "'"
         out = self.cur.execute(command).fetchall()
-        if len(out[0]) > 0:
+        if len(out) > 0:
             return True
         else:
             return False

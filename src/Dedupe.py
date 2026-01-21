@@ -1,19 +1,26 @@
 import sqlite3
+import pdb
 import hashlib
 import json
 import uuid
 from datetime import datetime
+from .CategoryManager import CategoryManager
 
 class Dedupe():
     def __init__(self, config):
         self.db_path = config.db_path
+        self.config = config
         self.ts = config['timestamp']
+        self.cat_manager = None
 
     def run(self, cur):
+        self.cat_manager = CategoryManager(self.config, cur)
         rows = cur.execute("SELECT * FROM staging_transactions").fetchall()
         now = self.ts
         for r in rows:
             self.dedupe(r, cur, now)
+            if r[10] is not None:
+                self.cat_manager.cat_transaction(r[0], r[10])
 
     def dedupe(self, row, cur, now):
         fp = self._fingerprint(row)
