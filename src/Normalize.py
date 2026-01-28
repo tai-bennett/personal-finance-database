@@ -9,13 +9,17 @@ class Normalize():
         self.db_path = config.db_path
         self.ts = config.timestamp
         self.update_mode = True
+        self.conn = None
+        self.cur = None
 
-    def run(self, cur):
+    def run(self, conn):
+        self.conn = conn
+        self.cur = self.conn.cursor()
         command = "SELECT raw_id, source_bank, raw_payload, ingestion_ts FROM raw_transactions"
         if self.update_mode:
             command = command + " WHERE ingestion_ts = '" + str(self.ts) + "'"
 
-        rows = cur.execute(command).fetchall()
+        rows = self.cur.execute(command).fetchall()
 
         for raw_id, source, raw_payload, ts in rows:
             payload = json.loads(raw_payload)
@@ -25,7 +29,7 @@ class Normalize():
             except Exception:
                 continue
 
-            cur.execute(
+            self.cur.execute(
                 """
                 INSERT OR IGNORE INTO staging_transactions
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -44,6 +48,7 @@ class Normalize():
                     cat
                 ),
                 )
+        self.conn.commit()
 
     def normalize_row(self, source, payload):
         if source == 'us_bank_1':

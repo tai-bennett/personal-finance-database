@@ -4,10 +4,14 @@ personal_finance_database.egg-info/SOURCES.txt
 personal_finance_database.egg-info/dependency_links.txt
 personal_finance_database.egg-info/top_level.txt
 src/Agent.py
+src/App.py
 src/Categorize.py
+src/CategoryManager.py
 src/Dedupe.py
 src/Ingest.py
 src/Normalize.py
+src/TagManager.py
+src/Tagger.py
 src/__init__.py
 src/config.py
 src/utils.py

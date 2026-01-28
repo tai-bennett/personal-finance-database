@@ -18,10 +18,8 @@ class Agent():
         self.dedupe = Dedupe(self.config)
 
     def run(self):
-        conn = sqlite3.connect(self.db_path)
-        cur = conn.cursor()
-        self.ingest.run(cur)
-        self.normalize.run(cur)
-        self.dedupe.run(cur)
-        conn.commit()
-        conn.close()
+        self.conn = sqlite3.connect(self.db_path)
+        self.ingest.run(self.conn)
+        self.normalize.run(self.conn)
+        self.dedupe.run(self.conn)
+        self.conn.close()

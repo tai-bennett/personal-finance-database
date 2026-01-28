@@ -1,4 +1,6 @@
 import hashlib
+import pdb
+import sqlite3
 import json
 import uuid
 from .CategoryManager import CategoryManager
@@ -6,13 +8,18 @@ from .CategoryManager import CategoryManager
 
 class Categorize():
     def __init__(self, config):
+        self.config = config
         self.db_path = config.db_path
         self.ts = config['timestamp']
         self.update_mode = True
-        self.cat_manager = CategoryManager(config)
+        self.cat_manager = None
+        self.conn = None
+        self.cur = None
 
-    def run(self, cur):
-        self.cat_by_rule(cur)
+    def run(self, conn):
+        self.conn = conn
+        self.cur = self.conn.cursor()
+        self.cat_by_rule()
 
     # def cat_by_source(self, cur):
     #     command = "SELECT * FROM staging_transactions WHERE category NOT NULL"
@@ -26,17 +33,17 @@ class Categorize():
     #         self.cat_manager.cat_transactions()
     #         
 
-    def cat_by_rule(self, cur):
+    def cat_by_rule(self):
         # categorize using category_rules table for all or new rows in transactions
         # get transactions tables
         command = "SELECT * FROM transactions"
         if self.update_mode:
             command = command + " WHERE ingestion_ts = '" + str(self.ts) + "'"
 
-        rows = cur.execute(command).fetchall()
+        rows = self.cur.execute(command).fetchall()
 
         command = "SELECT * FROM category_rules"
-        rules = cur.execute(command).fetchall()
+        rules = self.cur.execute(command).fetchall()
 
         for row in rows:
             self._categorize_row(row, rules)
@@ -47,3 +54,44 @@ class Categorize():
 
     def _apply_rule(self, row, rule):
         pass
+
+    def manual_cat(self, start, end):
+        self.conn = sqlite3.connect(self.db_path)
+        self.cur = self.conn.cursor()
+        self.cat_manager = CategoryManager(self.config, self.conn)
+        rows = self.fetch_transactions(start, end)
+        self.interactive_cat_loop(rows)
+        self.conn.commit()
+        self.conn.close
+
+    def interactive_cat_loop(self, rows):
+        for r in rows:
+            print("|" + "="*40 + "|")
+            print(f"Date: {r[1]}")
+            print(f"Amount: {r[3]:.2f}")
+            print(f"Category: {r[4] or '-'}")
+            print(f"Description: {r[2]}")
+
+            choice = input("Add tag: [y]es/ [n]o / [q]uit: ").strip().lower()
+
+            if choice == "q":
+                break
+            if choice != "y":
+                continue
+
+            cat = input("Enter cat name: ").strip()
+            self.cat_manager.cat_transaction(r[0], cat, priority=1, method="manual")
+
+    def fetch_transactions(self, start, end):
+        start = "'" + start + "'"
+        end = "'" + end + "'"
+        command = f"""
+        SELECT t.transaction_id, t.transaction_date, t.description, t.amount, c.category_name
+        FROM transactions AS t
+        LEFT JOIN transaction_categories tc USING (transaction_id)
+        LEFT JOIN categories c ON c.category_id = tc.category_id
+        WHERE t.transaction_date BETWEEN {start} AND {end}
+        GROUP BY t.transaction_id
+        ORDER BY t.transaction_date
+        """
+        return self.cur.execute(command).fetchall()

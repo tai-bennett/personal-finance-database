@@ -15,15 +15,17 @@ class Ingest():
         self.db_path = config.db_path
         self.raw_dir = Path(config.raw_dir)
         self.update_mode = True
-        self.cur = None
+        self.conn = None
         self.ts = config.timestamp
 
-    def run(self, cur):
+    def run(self, conn):
         # self.ts = datetime.utcnow().isoformat()
-        self.cur = cur
+        self.conn = conn
+        self.cur = self.conn.cursor()
         for source_dir in self.raw_dir.iterdir():
             for csv_path in source_dir.glob("*.csv"):
                 self.ingest_csv(source_dir.name, csv_path)
+        self.conn.commit()
 
     def ingest_csv(self, source, csv_path):
         fh = file_hash(csv_path)

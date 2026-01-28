@@ -6,12 +6,14 @@ from .TagManager import TagManager
 class Tagger():
     def __init__(self, config):
         self.db_path = config.db_path
-        self.conn = sqlite3.connect(self.db_path)
-        self.cur = self.conn.cursor()
+        self.conn = None
+        self.cur = None
         self.rows = None
         self.tag_manager = TagManager(config)
 
     def run(self, start, end):
+        self.conn = sqlite3.connect(self.db_path)
+        self.cur = self.conn.cursor()
         rows = self.fetch_transactions(start, end)
         self.interactive_tag_loop(rows)
         self.conn.commit()
@@ -33,7 +35,7 @@ class Tagger():
 
     def interactive_tag_loop(self, rows):
         for r in rows:
-            print("|" + "="*70 + "|")
+            print("|" + "="*40 + "|")
             print(f"Date: {r[1]}")
             print(f"Amount: {r[3]:.2f}")
             print(f"Tags: {r[4] or '-'}")

@@ -12,19 +12,24 @@ class Dedupe():
         self.config = config
         self.ts = config['timestamp']
         self.cat_manager = None
+        self.conn = None
+        self.cur = None
 
-    def run(self, cur):
-        self.cat_manager = CategoryManager(self.config, cur)
-        rows = cur.execute("SELECT * FROM staging_transactions").fetchall()
+    def run(self, conn):
+        self.conn = conn
+        self.cur = self.conn.cursor()
+        self.cat_manager = CategoryManager(self.config, self.cur)
+        rows = self.cur.execute("SELECT * FROM staging_transactions").fetchall()
         now = self.ts
         for r in rows:
-            self.dedupe(r, cur, now)
+            self.dedupe(r, now)
             if r[10] is not None:
                 self.cat_manager.cat_transaction(r[0], r[10])
+        self.conn.commit()
 
-    def dedupe(self, row, cur, now):
+    def dedupe(self, row, now):
         fp = self._fingerprint(row)
-        cur.execute(
+        self.cur.execute(
             """
             INSERT INTO transactions (
                 transaction_id,

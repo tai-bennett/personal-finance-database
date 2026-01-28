@@ -5,13 +5,13 @@ from datetime import datetime
 
 
 class CategoryManager():
-    def __init__(self, config, cur):
+    def __init__(self, config, conn):
         self.db_path = config.db_path
-        self.conn = sqlite3.connect(self.db_path)
-        self.cur = cur
+        self.conn = conn
+        self.cur = self.conn.cursor()
 
-    def close_connection(self):
-        self.conn.close()
+    # def close_connection(self):
+    #     self.conn.close()
 
     def get_or_create_cat(self, name, description=None):
         command = "SELECT category_id FROM categories WHERE category_name = ?"
