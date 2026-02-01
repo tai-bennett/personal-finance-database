@@ -25,3 +25,10 @@ class DashboardService():
         filters['end_date'] = "2025-10-31"
 
         return self.filtered_transactions(filters)
+
+    def get_aggregate(self):
+        filters = {'start_date': None, 'end_date': None}
+        filters['start_date'] = "2025-10-01"
+        filters['end_date'] = "2025-10-31"
+
+        return self.repo.get_aggregate(filters)

@@ -11,7 +11,7 @@ class Categorize():
         self.config = config
         self.db_path = config.db_path
         self.ts = config['timestamp']
-        self.update_mode = True
+        self.update_mode = (config.update_mode == 'new')
         self.cat_manager = None
         self.conn = None
         self.cur = None
@@ -72,6 +72,7 @@ class Categorize():
             print(f"Category: {r[4] or '-'}")
             print(f"Description: {r[2]}")
 
+            print(f"ID: {r[0]}")
             choice = input("Add tag: [y]es/ [n]o / [q]uit: ").strip().lower()
 
             if choice == "q":

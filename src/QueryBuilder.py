@@ -15,8 +15,29 @@ class QueryBuilder():
         """
         return command
 
+    def aggregate(self, filters):
+        start = "'" + filters['start_date'] + "'"
+        end = "'" + filters['end_date'] + "'"
+        command = f"""
+        SELECT c.category_name, SUM(t.amount)
+        FROM transactions AS t
+        LEFT JOIN transaction_categories tc ON tc.transaction_id = t.transaction_id
+        LEFT JOIN categories c ON c.category_id = tc.category_id
+        WHERE t.transaction_date BETWEEN {start} AND {end}
+        GROUP BY c.category_name
+        ORDER BY t.transaction_date;
+        """
+        return command
+
     def build(self, filters: dict):
         """
         From a dictionary of requirements, build an SQL query that fetches such data
         """
         pass
+
+    def _filter_to_standard_schema(self, filters: dict):
+        schema = {
+            'columns': "*",
+            'table': 'transactions',
+            'order': 'transaction_date'
+            }

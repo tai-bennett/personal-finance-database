@@ -58,3 +58,4 @@ class CategoryManager():
         self.conn.commit()
 
 
+

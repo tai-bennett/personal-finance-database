@@ -1,4 +1,6 @@
 {
     "db_path": "db/finanace.db",
-    "raw_dir": "data/raw"
+    "raw_dir": "data/raw",
+    "update_mode": "new",
+    "schema_path": "db/schema.sql"
 }

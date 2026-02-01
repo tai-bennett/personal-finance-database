@@ -1,5 +1,6 @@
 {
     "db_path": "db/test.db",
     "raw_dir": "data/raw_sample",
-    "schema_path": "db/schema.sql"
+    "schema_path": "db/schema.sql",
+    "update_mode": "all"
 }

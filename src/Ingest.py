@@ -14,7 +14,7 @@ class Ingest():
     def __init__(self, config):
         self.db_path = config.db_path
         self.raw_dir = Path(config.raw_dir)
-        self.update_mode = True
+        self.update_mode = (config.update_mode == 'new')
         self.conn = None
         self.ts = config.timestamp
 

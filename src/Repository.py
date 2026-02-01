@@ -16,5 +16,13 @@ class Repository():
         out = pd.DataFrame(data)
         # pdb.set_trace()
         return out
+
+    def get_aggregate(self, filters: dict):
+        self.cur = self.conn.cursor()
+        command = self.query_builder.aggregate(filters)
+        data = self.cur.execute(command).fetchall()
+        out = pd.DataFrame(data)
+        # pdb.set_trace()
+        return out
         
         

@@ -18,17 +18,18 @@ class Dedupe():
     def run(self, conn):
         self.conn = conn
         self.cur = self.conn.cursor()
-        self.cat_manager = CategoryManager(self.config, self.cur)
+        self.cat_manager = CategoryManager(self.config, self.conn)
         rows = self.cur.execute("SELECT * FROM staging_transactions").fetchall()
         now = self.ts
         for r in rows:
-            self.dedupe(r, now)
+            t_id = self.dedupe(r, now)
             if r[10] is not None:
-                self.cat_manager.cat_transaction(r[0], r[10])
+                self.cat_manager.cat_transaction(t_id, r[10])
         self.conn.commit()
 
     def dedupe(self, row, now):
         fp = self._fingerprint(row)
+        t_id = str(uuid.uuid4())
         self.cur.execute(
             """
             INSERT INTO transactions (
@@ -48,7 +49,7 @@ class Dedupe():
             DO UPDATE SET last_seen = excluded.last_seen
             """,
             (
-                str(uuid.uuid4()),
+                t_id,
                 fp,
                 row[3],
                 row[4],
@@ -60,6 +61,7 @@ class Dedupe():
                 now,
             ),
         )
+        return t_id
 
     def _fingerprint(self, row):
         key = "|".join(

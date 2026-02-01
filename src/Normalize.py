@@ -8,7 +8,7 @@ class Normalize():
     def __init__(self, config):
         self.db_path = config.db_path
         self.ts = config.timestamp
-        self.update_mode = True
+        self.update_mode = (config.update_mode == 'new')
         self.conn = None
         self.cur = None
 

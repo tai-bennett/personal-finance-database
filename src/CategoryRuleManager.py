@@ -12,7 +12,7 @@ class CategoryRuleManager():
         self.cur = self.conn.cursor()
         self.cat_manager = CategoryManager(config, self.conn)
 
-    def get_or_create_rule(self, pattern_type, pattern, category, description=""):
+    def get_or_create_rule(self, pattern_type, pattern, category, source='manual', description=""):
         command = """
         SELECT r.rule_id
         FROM category_rules r
@@ -29,9 +29,9 @@ class CategoryRuleManager():
         rule_id = str(uuid.uuid4())
         self.cur.execute(
             """
-            INSERT INTO category_rules VALUES (?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO category_rules VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             """,
-            (rule_id, pattern_type, pattern, cat_id, 2, ts, description)
+            (rule_id, pattern_type, pattern, cat_id, 2, ts, description, source)
             )
         self.conn.commit()
         return rule_id
