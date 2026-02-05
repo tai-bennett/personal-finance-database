@@ -1,35 +1,56 @@
 {
-    'category': {
-	'cat1': {
-	    'type': 'substring',
-	    'pattern': 'transfer',
-	    'category': 'Transfer',
-	    'description': 'Categorizing internal transfers from accounts or credit card payments'
+    "category":
+    {
+	"cat1":
+	{
+	    "type": "substring",
+	    "pattern": "transfer",
+	    "category": "Transfer",
+	    "description": "Categorizing internal transfers from accounts or credit card payments"
 	},
-	'cat2': {
-	    'type': 'substring',
-	    'pattern':
-	    'credit card payment',
-	    'category': 'Transfer',
-	    'description': 'Categorizes credit card payments for chase'
+	"cat2":
+	{
+	    "type": "substring",
+	    "pattern": "credit card payment",
+	    "category": "Transfer",
+	    "description": "Categorizes credit card payments for chase"
 	},
-    }
-    'tag':{
-	'tag1': {
-	    'type': 'substring',
-	    'pattern': 'starbucks',
-	    'tag': 'coffee'
+	"cat3":
+	{
+	    "type": "substring",
+	    "pattern": "pet insurance",
+	    "category": "Dog",
+	    "description": "Categorizes pet insurance for dog"
 	},
-	'tag2': {
-	    'type': 'substring',
-	    'pattern': 'netflix',
-	    'tag': 'streaming'
+	"cat4":
+	{
+	    "type": "substring",
+	    "pattern": "monthly maintenance fee",
+	    "category": "Misc",
+	    "description": "Categorizes monthly maintenance fee as misc"
+	}
+
+    },
+    "tag":
+    {
+	"tag1":
+	{
+	    "type": "substring",
+	    "pattern": "starbucks",
+	    "tag": "coffee"
 	},
-	'tag3': {
-	    'type': 'substring',
-	    'pattern': 'united states community physic',
-	    'tag': 'doctor'
+	"tag2":
+	{
+	    "type": "substring",
+	    "pattern": "netflix",
+	    "tag": "streaming"
 	},
+	"tag3":
+	{
+	    "type": "substring",
+	    "pattern": "united states community physic",
+	    "tag": "doctor"
+	}
 
     }
 

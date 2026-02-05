@@ -3,6 +3,7 @@ import sqlite3
 
 from .CategoryRuleManager import CategoryRuleManager
 from .config import *
+from .utils import CONFIG_ROOT
 
 
 class CategoryRule():
@@ -22,14 +23,14 @@ class CategoryRule():
         self.conn.close()
 
     def add_rule_from_json(self, path):
-        pdb.set_trace()
-        rules, _ = get_config_from_json(path)
+        rules, _ = get_config_from_json(str(path))
         rules = rules.category
         for rule in rules.values():
             self.cat_rule_manager.get_or_create_rule(
                 rule['type'],
                 rule['pattern'],
                 rule['category'],
+                source='json',
                 description=rule['description']
             )
 
@@ -37,7 +38,9 @@ class CategoryRule():
     def _interactive_add_rule(self):
         option = input("Get rules from json? (Y/n): ")
         if option == "Y":
-            path = input("Path to json: ")
+            print("Rule files should be in " + str(CONFIG_ROOT))
+            path = input("Filename: ")
+            path = CONFIG_ROOT / path
             self.add_rule_from_json(path)
         else:
             pt = input("Pattern type is [s]ubstring, [e]xact string or [r]egex?: ")

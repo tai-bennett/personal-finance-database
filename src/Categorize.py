@@ -4,6 +4,8 @@ import sqlite3
 import json
 import uuid
 from .CategoryManager import CategoryManager
+from .config import *
+from .utils import CONFIG_ROOT
 
 
 class Categorize():
@@ -36,24 +38,55 @@ class Categorize():
     def cat_by_rule(self):
         # categorize using category_rules table for all or new rows in transactions
         # get transactions tables
+        self.cat_manager = CategoryManager(self.config, self.conn)
         command = "SELECT * FROM transactions"
         if self.update_mode:
             command = command + " WHERE ingestion_ts = '" + str(self.ts) + "'"
 
         rows = self.cur.execute(command).fetchall()
-
-        command = "SELECT * FROM category_rules"
-        rules = self.cur.execute(command).fetchall()
+        rules = self._get_rules()
 
         for row in rows:
             self._categorize_row(row, rules)
 
+    def _get_rules(self):
+        # command = "SELECT * FROM category_rules"
+        # rules = self.cur.execute(command).fetchall()
+        path = CONFIG_ROOT / self.config.cat_rules
+        rules, _ = get_config_from_json(str(path))
+        rules = rules.category
+        return rules
+        
+
     def _categorize_row(self, row, rules):
-        for rule in rules:
+        # for rule in rules:
+        #     self._apply_rule(row, rule)
+        for rule in rules.values():
             self._apply_rule(row, rule)
 
     def _apply_rule(self, row, rule):
-        pass
+        cat = self._apply_rule_to_row(row, rule)
+        self._set_cat_to_row(row, cat)
+
+    def _apply_rule_to_row(self, row, rule):
+        if rule['type'] == 'substring':
+            # pdb.set_trace()
+            if rule['pattern'].lower() in row[5].lower():  # the description column is r[5]
+                return rule['category']
+            else:
+                return None
+
+    def _set_cat_to_row(self, row, cat):
+        if cat is None:
+            return
+        else:
+            self.cat_manager.cat_transaction(
+                row[5],
+                cat,
+                priority=2,
+                method='json'
+                )
+                
 
     def manual_cat(self, start, end):
         self.conn = sqlite3.connect(self.db_path)
