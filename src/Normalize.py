@@ -1,4 +1,5 @@
 import sqlite3
+import pdb
 import json
 import uuid
 from datetime import datetime
@@ -6,6 +7,7 @@ from datetime import datetime
 
 class Normalize():
     def __init__(self, config):
+        self.config = config
         self.db_path = config.db_path
         self.ts = config.timestamp
         self.update_mode = (config.update_mode == 'new')
@@ -51,7 +53,9 @@ class Normalize():
         self.conn.commit()
 
     def normalize_row(self, source, payload):
-        if source == 'us_bank_1':
+        source_name = self.config.normalization[source]
+
+        if source_name == 'boa':
             return (
                 payload['Date'],
                 None,
@@ -59,7 +63,7 @@ class Normalize():
                 payload['Amount'],
                 None
                 )
-        if source == 'chase_credit_card':
+        elif source_name == 'chase':
             t_date = payload['Transaction Date']
             p_date = payload['Post Date']
             t_date = datetime.strptime(t_date, "%m/%d/%Y").date().isoformat()
@@ -71,5 +75,6 @@ class Normalize():
                 payload['Amount'],
                 payload['Category']
                 )
-        raise ValueError(f"While normalizing, unknown source {source} was used.")
+        else:
+            raise ValueError(f"While normalizing, unknown source {source} was used.")
         

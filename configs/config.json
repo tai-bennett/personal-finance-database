@@ -1,6 +1,13 @@
 {
-    "db_path": "db/finanace.db",
+    "db_path": "db/finance.db",
     "raw_dir": "data/raw",
-    "update_mode": "new",
-    "schema_path": "db/schema.sql"
+    "update_mode": "all",
+    "schema_path": "db/schema.sql",
+    "cat_rules": "cat_rules.json",
+    "normalization":
+    {
+	"chase_sapphire": "chase",
+	"us_bank_check_kaobennett": "boa",
+	"us_bank_save_kaobennett": "boa"
+    }
 }

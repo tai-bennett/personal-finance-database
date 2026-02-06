@@ -3,5 +3,10 @@
     "raw_dir": "data/raw_sample",
     "schema_path": "db/schema.sql",
     "cat_rules": "rules_test.json",
-    "update_mode": "all"
+    "update_mode": "all",
+    "normalization":
+    {
+	"chase_credit_card": "chase",
+	"us_bank_1": "boa"
+    }
 }

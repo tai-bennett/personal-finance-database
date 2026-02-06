@@ -25,6 +25,9 @@ class Ingest():
         for source_dir in self.raw_dir.iterdir():
             for csv_path in source_dir.glob("*.csv"):
                 self.ingest_csv(source_dir.name, csv_path)
+            # This is a hacky fix, you should make glob case insensitive
+            for csv_path in source_dir.glob("*.CSV"): 
+                self.ingest_csv(source_dir.name, csv_path)
         self.conn.commit()
 
     def ingest_csv(self, source, csv_path):
