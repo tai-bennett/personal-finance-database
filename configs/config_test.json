@@ -7,6 +7,6 @@
     "normalization":
     {
 	"chase_credit_card": "chase",
-	"us_bank_1": "boa"
+	"us_bank_1": "usbank"
     }
 }

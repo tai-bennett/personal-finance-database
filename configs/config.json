@@ -7,7 +7,7 @@
     "normalization":
     {
 	"chase_sapphire": "chase",
-	"us_bank_check_kaobennett": "boa",
-	"us_bank_save_kaobennett": "boa"
+	"us_bank_check_kaobennett": "usbank",
+	"us_bank_save_kaobennett": "usbank"
     }
 }

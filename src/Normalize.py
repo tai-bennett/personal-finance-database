@@ -55,7 +55,7 @@ class Normalize():
     def normalize_row(self, source, payload):
         source_name = self.config.normalization[source]
 
-        if source_name == 'boa':
+        if source_name == 'usbank':
             return (
                 payload['Date'],
                 None,
